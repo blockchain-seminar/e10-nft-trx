@@ -50,14 +50,14 @@ def fetch_blocks(block_from, block_to, web3):
                       'trx_hash': tx['hash'].hex(),
                       #'status': 1, # TODO success, failed?
                       'timestamp': None, # TODO
-                      'sending_party': tx['from'],
-                      'interacted_with': tx['to'],
-                      'tx_value_wei': tx['value'],  
-                      'tx_value_eth': float(Web3.from_wei(tx.value, 'ether')),
+                      'trx_initiator': tx['from'],
+                      'marketplace_address': tx['to'],
+                      'trx_value': tx['value'],  
+                      'trx_value_eth': float(Web3.from_wei(tx.value, 'ether')), # TODO if trx_value is in wei. we need read it from the logs (transaction_processing.py does it I think)
                       'token_id': func_params['']['offerIdentifier'],
-                      'token_contract': func_params['']['offerToken'],
+                      'nft_contract': func_params['']['offerToken'],
                       'token_qty': func_params['']['offerAmount'],
-                      'protocol': protocol
+                      'nft_marketplace': protocol
                       })
               except (TypeError, AttributeError, KeyError) as e:
                   # TODO deal with different input data format (different contracts = different input?)
@@ -69,14 +69,14 @@ def fetch_blocks(block_from, block_to, web3):
                       'trx_hash': tx['hash'].hex(),
                       #'status': 1, # TODO success, failed?
                       'timestamp': None, # TODO
-                      'sending_party': tx['from'],
-                      'interacted_with': tx['to'],
-                      'tx_value_wei': tx['value'],  
-                      'tx_value_eth': float(Web3.from_wei(tx.value, 'ether')),
+                      'trx_initiator': tx['from'],
+                      'marketplace_address': tx['to'],
+                      'trx_value': tx['value'],  
+                      'trx_value_eth': float(Web3.from_wei(tx.value, 'ether')),
                       'token_id': None,
-                      'token_contract': None,
+                      'nft_contract': None,
                       'token_qty': None,
-                      'protocol': protocol
+                      'nft_marketplace': protocol
                       })
                       
                   
