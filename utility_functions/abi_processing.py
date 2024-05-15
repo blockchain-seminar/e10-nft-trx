@@ -1,6 +1,9 @@
 import requests
 import functools
 
+from config import etherscan_api_key
+
+
 # GET ABIs dynamicall for currency and price
 @functools.lru_cache(maxsize=1000)  # Cache up to 1000 contract ABIs
 def get_contract_abi(contract_address):

@@ -1,0 +1,6 @@
+web3
+pandas
+db-sqlite3
+requests
+tqdm
+python-dotenv

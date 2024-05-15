@@ -1,9 +1,6 @@
-from web3 import Web3
+from config import erc721_transfer, erc1155_transfer_single, erc1155_transfer_batch, web3
+from utility_functions import get_contract_abi
 
-# Event signature hashes for ERC-721 and ERC-1155 Transfer events
-erc721_transfer = Web3.keccak(text='Transfer(address,address,uint256)').hex()
-erc1155_transfer_single = Web3.keccak(text='TransferSingle(address,address,address,uint256,uint256)').hex()
-erc1155_transfer_batch = Web3.keccak(text='TransferBatch(address,address,address,uint256[],uint256[])').hex()
 
 def determine_contract_type(log):
     if log['topics'][0].hex() == erc721_transfer:
@@ -47,6 +44,6 @@ def get_traded_price_and_currency(tx_hash, log):
             currency = symbol
         except Exception as e:
             print(f"Error processing ERC-20 transfer: {e}")
-            currency= "Not Available"
+            currency = "Not Available"
 
     return traded_price, currency

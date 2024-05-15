@@ -4,7 +4,7 @@ from data_processing import determine_contract_type, get_traded_price_and_curren
 from tqdm import tqdm
 from web3 import Web3
 import pandas as pd
-from utils import fetch_contract_abi 
+from utility_functions import fetch_contract_abi
 
 web3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8547"))
 
