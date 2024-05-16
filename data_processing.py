@@ -75,10 +75,27 @@ def fetch_blocks(block_from, block_to):
                             else:
                                 traded_price_eth, currency = None, None
 
-                            nft_collection = log['address']
-                            from_address = log['topics'][1].hex()  # web3.to_checksum_address('0x' + log['topics'][1].hex()[-40:])
-                            to_address = log['topics'][2].hex()  # web3.to_checksum_address('0x' + log['topics'][2].hex()[-40:])
-                            nft_token_id = parse_int_from_data(log['topics'][3])
+                            if len(log['topics']) == 4:
+                                nft_collection = log['address']
+                                from_address = log['topics'][1].hex()  # web3.to_checksum_address('0x' + log['topics'][1].hex()[-40:])
+                                to_address = log['topics'][2].hex()  # web3.to_checksum_address('0x' + log['topics'][2].hex()[-40:])
+                                nft_token_id = parse_int_from_data(log['topics'][3])
+                            elif len(log['topics']) == 3:
+                                # if there are 3 attributes then the "TO address becomes the nft_collection"
+                                # the nft_token_id also does not exist.
+                                nft_collection = tx['to']
+                                from_address = log['topics'][1].hex()  # web3.to_checksum_address('0x' + log['topics'][1].hex()[-40:])
+                                to_address = log['topics'][2].hex()  # web3.to_checksum_address('0x' + log['topics'][2].hex()[-40:])
+                                nft_token_id = "In existent..."
+                            else:
+                                nft_collection = log['address']
+                                from_address = log['topics'][1].hex()  # web3.to_checksum_address('0x' + log['topics'][1].hex()[-40:])
+                                to_address = log['topics'][2].hex()  # web3.to_checksum_address('0x' + log['topics'][2].hex()[-40:])
+                                nft_token_id = parse_int_from_data(log['topics'][3])
+                                print("Attention")
+
+                                # if there are 2 attributes then the
+                                #
 
                             # token_id = parse_int_from_data(log['data']) if log['data'] else "Data Not Available"
                             # value = parse_int_from_data(log['data'][64:]) if len(log['data']) > 64 else 0
@@ -160,10 +177,10 @@ def fetch_blocks(block_from, block_to):
     write_to_db(df_blocks, 'fetched_blocks')
 
     df_transactions = pd.DataFrame(transactions)
-    df_transactions.set_index('trx_hash', inplace=True)
+    df_transactions.set_index('transaction_hash', inplace=True)
 
     # to avoid overflow errors with sql lite db. TODO find better solution
-    for column in ['token_id', 'price']:
+    for column in ['nft_token_id', 'transaction_action_value']:
         df_transactions[column] = df_transactions[column].astype(str)
 
     logger.info('writing transactions into database')

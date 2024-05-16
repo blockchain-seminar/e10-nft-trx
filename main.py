@@ -11,7 +11,7 @@ def initialize():
 def main():
     block_latest, block_lowest_fetched, block_highest_fetched = get_latest_blocks(web3)
 
-    n = 20
+    n = 10
     if block_lowest_fetched is None or block_highest_fetched is None:
         fetch_blocks(block_latest - n, block_latest)
     else:
