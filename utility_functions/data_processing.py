@@ -1,8 +1,12 @@
 from config import web3
 from utility_functions import get_contract_abi
+from utility_functions.abi_processing import get_known_token_info
 from utils import setup_logger
+import json
 
 logger = setup_logger()
+
+
 def determine_contract_type(log):
     """
     Thanks, identified how to it earlier, but forgot to write the answer.
@@ -36,7 +40,6 @@ def determine_contract_type(log):
         return "Unknown"
 
 
-
 def parse_int_from_data(data):
     try:
         # Strip leading zeros and decode data to integer
@@ -44,7 +47,6 @@ def parse_int_from_data(data):
     except ValueError as e:
         logger.info(f'Failed to parse:{data.hex()} with error {str(e)}')
         return 0
-
 
 
 # Get price data from block
@@ -61,15 +63,33 @@ def get_traded_price_and_currency(transaction, log):
     if log['topics'][0].hex() == web3.keccak(text="Transfer(address,address,uint256)").hex():
         token_contract = log['address']
         token_value = parse_int_from_data(log['data']) if log['data'] else "Data Not Available"
-        try:
-            erc20_abi = get_contract_abi(token_contract)
-            token = web3.eth.contract(address=token_contract, abi=erc20_abi)
-            symbol = token.functions.symbol().call()
-            decimals = token.functions.decimals().call()
+
+        known_token = get_known_token_info(token_contract)
+        if known_token:
+            symbol = known_token['symbol']
+            decimals = known_token['decimals']
             traded_price = token_value / (10 ** decimals)
             currency = symbol
-        except Exception as e:
-            print(f"Error processing ERC-20 transfer: {e}")
-            currency = "Not Available"
+        else:
+            try:
+                erc20_abi = get_contract_abi(token_contract)
+                token = web3.eth.contract(address=token_contract, abi=erc20_abi)
+                erc20_abi_json = json.loads(erc20_abi)
+
+                # Check if the contract has symbol and decimals functions
+                if 'symbol' in [func['name'] for func in erc20_abi_json if 'name' in func]:
+                    symbol = token.functions.symbol().call()
+                else:
+                    raise Exception("symbol function not found in the contract")
+
+                if 'decimals' in [func['name'] for func in erc20_abi_json if 'name' in func]:
+                    decimals = token.functions.decimals().call()
+                else:
+                    raise Exception("decimals function not found in the contract")
+
+                traded_price = token_value / (10 ** decimals)
+                currency = symbol
+            except Exception as e:
+                currency = f"Not Available: {str(e)}"
 
     return traded_price, currency

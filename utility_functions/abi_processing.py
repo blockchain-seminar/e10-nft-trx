@@ -16,3 +16,11 @@ def get_contract_abi(contract_address):
         return contract_abi
     else:
         raise Exception("Failed to fetch contract ABI: " + response_json.get('result', 'No additional error info'))
+
+def get_known_token_info(token_contract):
+    # Dictionary of known token contracts with their symbol and decimals
+    known_tokens = {
+        '0x0000000000A39bb272e79075ade125fd351887Ac': {'symbol': 'BLUR', 'decimals': 18}
+        # Add other known tokens here
+    }
+    return known_tokens.get(token_contract)

@@ -50,26 +50,36 @@ def fetch_blocks(block_from, block_to):
                     receipt = web3.eth.get_transaction_receipt(tx.hash)
                     timestamp = pd.to_datetime(block.timestamp, unit='s')
                     formatted_timestamp = datetime.strftime(timestamp, '%Y-%m-%d %H:%M:%S')
-
+                    nonce = tx.get('nonce', None)
+                    gas = tx.get('gas', None)
+                    gas_price = tx.get('gasPrice', None)
+                    chain_id = tx.get('chainId', None)
+                    has_nft = False
                     for log in receipt.logs:
-                        # if protocol is not None: # this only means that we dont have the contract abi or something ... idk
-                        # func_obj, func_params = contract[protocol].decode_function_input(tx["input"])
-
                         contract_type = determine_contract_type(log)
-                        if contract_type != "Unknown":
+                        if contract_type in ["ERC-721", "ERC-1155"]:
+                            has_nft = True
+                            break
+
+                    if has_nft:
+                        for log in receipt.logs:
+                            # if protocol is not None: # this only means that we dont have the contract abi or something ... idk
+                            # func_obj, func_params = contract[protocol].decode_function_input(tx["input"])
+
+                            contract_type = determine_contract_type(log)
 
                             # here we should only have transactions which follow the ERC 721 structure
                             logger.info(f'reading an ERC contract from block {block_number} transaction {tx.hash}')
-                            traded_price_eth, currency = get_traded_price_and_currency(tx, log)
+                            if contract_type == "Unknown":
+                                traded_price_eth, currency = get_traded_price_and_currency(tx, log)
+                            else:
+                                traded_price_eth, currency = None, None
 
                             nft_collection = log['address']
                             from_address = log['topics'][1].hex()  # web3.to_checksum_address('0x' + log['topics'][1].hex()[-40:])
                             to_address = log['topics'][2].hex()  # web3.to_checksum_address('0x' + log['topics'][2].hex()[-40:])
                             nft_token_id = parse_int_from_data(log['topics'][3])
-                            nonce = tx.get('nonce', None)
-                            gas = tx.get('gas', None)
-                            gas_price = tx.get('gasPrice', None)
-                            chain_id = tx.get('chainId', None)
+
                             # token_id = parse_int_from_data(log['data']) if log['data'] else "Data Not Available"
                             # value = parse_int_from_data(log['data'][64:]) if len(log['data']) > 64 else 0
                             log_index = log.get('logIndex', None)
@@ -133,51 +143,7 @@ def fetch_blocks(block_from, block_to):
                                 # TODO deal with different input data format (different contracts = different input?)
                                 logger.exception('Exception occurred. Input data not appended', block_number, ' ',
                                                  tx['hash'].hex())
-                                record = {
-                                    # transaction information
-                                    'fetched_dt': datetime.now(),
-                                    "contract": contract_type,
-                                    "timestamp": formatted_timestamp,
-                                    'transaction_hash': tx['hash'].hex(),
-                                    "block_number": receipt.blockNumber,
-                                    'block_hash': tx['blockHash'].hex(),
-
-                                    'transaction_initiator': tx['from'],
-                                    'transaction_interacted_contract': tx['to'],
-
-                                    "nonce": nonce,
-                                    "gasPrice": gas_price,
-                                    "gas": gas,
-                                    "chainId": chain_id,
-
-                                    "log_index": log_index,
-                                    "transaction_index": transaction_index,
-
-                                    # nft information
-                                    "nft_collection": nft_collection,
-                                    "from_address": from_address,
-                                    "to_address": to_address,
-                                    "nft_token_id": nft_token_id,
-
-                                    'trx_value': tx['value'],
-                                    'trx_value_eth': float(web3.from_wei(tx.value, 'ether')),
-
-                                    "transaction_action_value": traded_price_eth,
-                                    "transaction_action_currency": currency,
-
-                                    # "value": value,  # always zero... idk if still needed or so
-
-                                    "platform": platform,
-                                    # other currency value, not token ID
-
-                                    # 'token_id': func_params['']['offerIdentifier'],
-                                    # 'nft_contract': func_params['']['offerToken'],
-                                    # 'token_qty': func_params['']['offerAmount'],
-                                    'nft_marketplace': protocol
-                                }
-                                transactions.append(record)
-                        else:
-                            logger.info(f'Not a ERC721 or 1155, skipping: {tx.hash}')
+                                print("ATTENTION!!")
                     blocks_fetched.append({'fetched_dt': datetime.now(), 'block_number': block.number})
                     logger.info(f'end fetch block {block_number}')
                 except Exception as e:
@@ -197,9 +163,9 @@ def fetch_blocks(block_from, block_to):
     df_transactions.set_index('trx_hash', inplace=True)
 
     # to avoid overflow errors with sql lite db. TODO find better solution
-    for column in ['d_token_id', 'd_price']:
+    for column in ['token_id', 'price']:
         df_transactions[column] = df_transactions[column].astype(str)
 
     logger.info('writing transactions into database')
-    write_to_db(df_transactions, 'trx')
+    write_to_db(df_transactions, 'trx_v2')
     logger.info('END: fetching blocks completed.')
