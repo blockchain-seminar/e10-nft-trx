@@ -95,12 +95,12 @@ def fetch_blocks(block_from, block_to):
                                     'block_hash': tx['blockHash'].hex(),
 
                                     'transaction_initiator': tx['from'],
-                                    'transaction_interacted_contract': tx['to'],
+                                    'transaction_interacted_contract': tx['to'], # could also be market place contract
 
                                     "nonce": nonce,
-                                    "gasPrice": gas_price,
+                                    "gas_price": gas_price,
                                     "gas": gas,
-                                    "chainId": chain_id,
+                                    "chain_id": chain_id,
 
                                     "log_index": log_index,
                                     "transaction_index": transaction_index,
