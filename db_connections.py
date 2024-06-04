@@ -28,6 +28,13 @@ def get_fetched_transactions():
   conn.close()
   return df
 
+def get_contract_addresses():
+  conn = sql.connect("e10.db")
+  cursor = conn.cursor()
+  df = pd.read_sql_query("SELECT * FROM marketplaces", conn)
+  conn.close()
+  return df
+
 # Appends a DataFrame to a specified table within the database. If the table does not exist, it is created. Closes the connection after writing. Prints an error message if an operation fails
 def write_to_db(df, table_name):
   try:
