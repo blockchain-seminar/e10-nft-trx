@@ -59,12 +59,15 @@ def fetch_contract_abi(contract_address):
     else:
         raise Exception("Failed to fetch contract ABI: " + response_json.get('result', 'No additional error info'))
 
-def get_contract_abi(contract_address):
+def get_contract_abi(marketplaces):
     contract_abi = read_json_to_dict('abi')
-    for protocol in contract_address:
-        if contract_abi.get(protocol) is None:
-            abi = fetch_contract_abi(contract_address[protocol])
-            with open(f'abi/{protocol}.json', 'w', encoding='utf-8') as file:
-                file.write(abi)
+    for address in marketplaces['contract_address']:
+        try:
+            if contract_abi.get(address) is None:
+                abi = fetch_contract_abi(address)
+                with open(f'abi/{address}.json', 'w', encoding='utf-8') as file:
+                    file.write(abi)
+        except:
+            pass
     contract_abi = read_json_to_dict('abi')
     return contract_abi
