@@ -42,15 +42,16 @@ def write_to_db(df, table_name):
     conn = sql.connect("e10.db")
     cursor = conn.cursor()
     cnt = df.to_sql(name=table_name, con=conn, if_exists='append', index=False)
-    logger.info(f'INFO: inserted {cnt} rows into table {table_name}') 
+    logger.info(f'inserted {cnt} rows into table {table_name}') 
     logger.info(df.head())
     conn.close()
-  except sql.OperationalError as e:
-    print("Error:", e)
+  except Exception as e:
+    logger.exception(e, table_name)
+    pass
 
 def read_from_db(query):
   try:
-    logger.info(f'INFO: execute query: {query}') 
+    logger.info(f'execute query: {query}') 
     conn = sql.connect("e10.db")
     cursor = conn.cursor()
     cursor.execute(query)
@@ -58,6 +59,17 @@ def read_from_db(query):
     df = pd.DataFrame(rows, columns=[col[0] for col in cursor.description])
     conn.close()
     return df
+  except sql.OperationalError as e:
+    print("Error:", e)
+
+def update_db(query):
+  try:
+    logger.info(f'execute query: {query}') 
+    conn = sql.connect("e10.db")
+    cursor = conn.cursor()
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
   except sql.OperationalError as e:
     print("Error:", e)
 
