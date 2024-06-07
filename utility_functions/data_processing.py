@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 from config import w3
 from utility_functions import get_contract_abi
@@ -36,15 +35,16 @@ def parse_abi_events(contract_address):
     return merged_df
 
 
-def determine_contract_type(log):
+def determine_contract_type(log_address):
     """
-    Thanks, identified how to it earlier, but forgot to write the answer.
     Basically, to check if it's NFT. Method supportsInterface should be called to check whether
     it supports 0x80ac58cd (ERC721) and 0xd9b67a26 (ERC1155).
     """
     erc721_interface_id = "0x80ac58cd"
     erc1155_interface_id = "0xd9b67a26"
-    token_contract = w3.eth.contract(address=log['address'], abi=[{
+    erc20_interface_id = "0x36372b07"
+    #TODO what abi is that? do we need the custom abi?     token_contract = w3.eth.contract(address=log_address, abi=f'../abi/{log_address}.json')
+    token_contract = w3.eth.contract(address=log_address, abi=[{
         "constant": True,
         "inputs": [{"name": "interfaceID", "type": "bytes4"}],
         "name": "supportsInterface",
@@ -54,14 +54,18 @@ def determine_contract_type(log):
         "type": "function"
     }])
 
+
     try:
         # Querying the contract to see if it supports the ERC-721 interface
         is_erc1155 = token_contract.functions.supportsInterface(erc1155_interface_id).call()
         is_erc721 = token_contract.functions.supportsInterface(erc721_interface_id).call()
+        is_erc20 = token_contract.functions.supportsInterface(erc20_interface_id).call()
         if is_erc721:
             return "ERC-721"
         elif is_erc1155:
             return "ERC-1155"
+        elif is_erc20:
+            return "ERC-20"
         else:
             return "Unknown"
     except Exception as e:
@@ -72,26 +76,27 @@ def determine_contract_type(log):
 def parse_int_from_data(data):
     try:
         # Strip leading zeros and decode data to integer
-        return int(data.hex(), 16)
+        return int(data, 16)
     except ValueError as e:
-        logger.info(f'Failed to parse:{data.hex()} with error {str(e)}')
-        return 0
+        logger.info(f'Failed to parse:{data} with error {str(e)}')
+        return None
 
 
 # Get price data from block
-def get_traded_price_and_currency(transaction, log):
+def get_traded_price_and_currency(value_eth, topic, token_contract,data):
     traded_price = None
     currency = "ETH"
 
     # Check if transaction is in eth
-    value_eth = transaction.value
     if value_eth > 0:
         traded_price = w3.from_wei(value_eth, 'ether')
 
     # If log represents an ERC-20 token transfer, get the token details
-    if log['topics'][0].hex() == w3.keccak(text="Transfer(address,address,uint256)").hex():
-        token_contract = log['address']
-        token_value = parse_int_from_data(log['data']) if log['data'] else "Data Not Available"
+    if topic == w3.keccak(text="Transfer(address,address,uint256)").hex():
+        if data is not None:
+            token_value = parse_int_from_data(data)
+        else:
+            token_value = None
 
         known_token = get_known_token_info(token_contract)
         if known_token:
@@ -109,16 +114,19 @@ def get_traded_price_and_currency(transaction, log):
                 if 'symbol' in [func['name'] for func in erc20_abi_json if 'name' in func]:
                     symbol = token.functions.symbol().call()
                 else:
+                    currency = None
                     raise Exception("symbol function not found in the contract")
 
                 if 'decimals' in [func['name'] for func in erc20_abi_json if 'name' in func]:
                     decimals = token.functions.decimals().call()
                 else:
+                    currency = None
                     raise Exception("decimals function not found in the contract")
 
                 traded_price = token_value / (10 ** decimals)
                 currency = symbol
             except Exception as e:
-                currency = f"Not Available: {str(e)}"
+                logger.exception(e)
+                pass
 
     return traded_price, currency
