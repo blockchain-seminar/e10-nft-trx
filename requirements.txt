@@ -1,6 +1,8 @@
+Flask
+Flask-SQLAlchemy
 web3
 pandas
-db-sqlite3
+sqlalchemy
 requests
 tqdm
 python-dotenv
