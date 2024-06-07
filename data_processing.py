@@ -96,6 +96,9 @@ def process_and_store_receipts(receipt):
         logger.info('END: process_and_store_receipts ...')
     
 def process_and_store_receipt_logs(logs):
+    '''
+    processing the receipts from the logs, flatten it and storing to DB
+    '''
     logger.info('START: process_and_store_receipt_logs ...')
     try:
         data = []
@@ -125,7 +128,7 @@ def process_and_store_receipt_logs(logs):
 
 def enrich():
     '''
-    Add the contract type to logs etc
+    For all the raw data that hasn't been enriched and stored in table nft_price_data, we fetch contract_type and nft information
     '''
     df = read_from_db('select l.*, t.to_address, t.from_address, t.value from receipt_logs l left join transactions t on t.transaction_hash = l.transaction_hash where t.transaction_hash not in (select distinct transaction_hash from nft_price_data);')
     for index, row in tqdm(df.iterrows()):
