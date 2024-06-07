@@ -131,7 +131,7 @@ def enrich():
     for index, row in tqdm(df.iterrows()):
         temp = {}
         contract_type = determine_contract_type(row['address'])
-        traded_price_eth, currency, from_address, to_address,nft_collection,nft_token_id = None, None, None, None, None, Nones
+        traded_price_eth, currency, from_address, to_address,nft_collection,nft_token_id = None, None, None, None, None, None
         if contract_type == "Unknown":
             traded_price_eth, currency = get_traded_price_and_currency(row['value'], row['topics_0'],row['address'],row['data'])
         else:
