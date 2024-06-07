@@ -42,7 +42,7 @@ def filter_transactions_by_marketplace(transactions):
             df_transaction = pd.DataFrame(transaction_data)
         return df_transaction
     except Exception as e:
-        logger.exception(e, transaction['blockNumber'], ' ', transaction['hash'].hex())
+        logger.exception(e)
         
 
 
@@ -53,11 +53,13 @@ def fetch_and_store_transactions_in_block_range(block_from, block_to):
             block = w3.eth.get_block(block_number, full_transactions=True)
             write_to_db(pd.DataFrame({'fetched_dt': datetime.now(), 'block_number': block.number},index=[0]), 'fetched_blocks')
             df_transactions = filter_transactions_by_marketplace(block.transactions)
-            write_to_db(df_transactions, 'transactions')
-        logger.info('END: fetching_and_store_transactions_in_block_range ...')
+            write_to_db(df_transactions, 'transactions')  
         return df_transactions
     except Exception as e:
-        logger.exception(e, block_number)
+        logger.exception(e)
+        pass
+    finally:
+        logger.info('END: fetching_and_store_transactions_in_block_range ...')
 
 def fetch_and_process_receipts(transaction_hash):
     logger.info('START: fetch_and_process_receipts ...')
@@ -66,6 +68,7 @@ def fetch_and_process_receipts(transaction_hash):
         process_and_store_receipts(receipt)
     except Exception as e:
         logger.exception(e, transaction_hash)
+        pass
     finally:
         logger.info('END: fetch_and_process_receipts ...')
 
@@ -90,6 +93,7 @@ def process_and_store_receipts(receipt):
         write_to_db(pd.DataFrame(data,index=[0]), 'receipts')
     except Exception as e:
         logger.exception(e, receipt['blockNumber'], ' ', receipt['transactionHash'].hex())
+        pass
     finally:
         logger.info('END: process_and_store_receipts ...')
     
@@ -116,7 +120,8 @@ def process_and_store_receipt_logs(logs):
             data.append(temp)
         write_to_db(pd.DataFrame(data), 'receipt_logs')
     except Exception as e:
-        logger.exception(e, log['blockNumber'], ' ', log['transactionHash'].hex())
+        logger.exception(e)
+        pass
     finally:
         logger.info('END: process_and_store_receipt_logs ...')
 
