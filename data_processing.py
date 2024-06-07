@@ -127,11 +127,11 @@ def enrich():
     '''
     Add the contract type to logs etc
     '''
-    df = read_from_db('select l.*, t.to_address, t.from_address, t.value from receipt_logs l left join transactions t on t.transaction_hash = l.transaction_hash where t.transaction_hash in (select distinct transaction_hash from nft_price_data);')
+    df = read_from_db('select l.*, t.to_address, t.from_address, t.value from receipt_logs l left join transactions t on t.transaction_hash = l.transaction_hash where t.transaction_hash not in (select distinct transaction_hash from nft_price_data);')
     for index, row in tqdm(df.iterrows()):
         temp = {}
         contract_type = determine_contract_type(row['address'])
-        traded_price_eth, currency, from_address, to_address,nft_collection,nft_token_id = None, None, None, None, None, None
+        traded_price_eth, currency, from_address, to_address,nft_collection,nft_token_id = None, None, None, None, None, Nones
         if contract_type == "Unknown":
             traded_price_eth, currency = get_traded_price_and_currency(row['value'], row['topics_0'],row['address'],row['data'])
         else:
