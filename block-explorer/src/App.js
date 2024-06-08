@@ -9,6 +9,7 @@ import ABIs from './components/ABIs';
 import TransactionDetail from './components/TransactionDetail';
 import BlockDetail from "./components/BlockDetail";
 import V_NFT_PriceData from "./components/V_NFT_PriceData";
+import DataProcessingForm from "./components/DataProcessingForm";
 
 // Create a theme instance.
 const darkTheme = createTheme({
@@ -62,6 +63,9 @@ function App() {
                         <Link component={NavLink} to="/abis" color="inherit" style={{ marginLeft: 20 }}>
                             ABIs
                         </Link>
+                        <Link component={NavLink} to="/updatedb" color="inherit" style={{ marginLeft: 20 }}>
+                            Update the Block Database
+                        </Link>
                     </Toolbar>
                 </AppBar>
                 <Container>
@@ -73,6 +77,7 @@ function App() {
                         <Route path="/blocks" element={<Blocks />} />
                         <Route path="/marketplaces" element={<Marketplaces />} />
                         <Route path="/abis" element={<ABIs />} />
+                        <Route path="/updatedb" element={<DataProcessingForm />} />
                     </Routes>
                 </Container>
             </Router>
