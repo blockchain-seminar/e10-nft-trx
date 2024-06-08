@@ -16,13 +16,14 @@ logger = setup_logger()
 def get_latest_entries():
     page = request.args.get('page', default=1, type=int)
     per_page = request.args.get('per_page', default=10, type=int)
-    try:
-        transactions = Transaction.query.order_by(Transaction.fetched_dt.desc()).paginate(page=page, per_page=per_page, error_out=False)
-        data = [{'transaction_hash': tx.transaction_hash, 'fetched_dt': tx.fetched_dt, 'block_number': tx.block_number} for tx in transactions.items]
-        return jsonify(data)
-    except Exception as e:
-        logger.error(f"Failed to fetch transactions: {str(e)}")
-        return jsonify({'error': 'Failed to fetch transactions'}), 500
+    pagination = Transaction.query.order_by(Transaction.fetched_dt.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    data = {
+        'items': [{'transaction_hash': tx.transaction_hash, 'fetched_dt': tx.fetched_dt, 'block_number': tx.block_number} for tx in pagination.items],
+        'total_pages': pagination.pages,
+        'current_page': pagination.page
+    }
+    return jsonify(data)
+
 
 @app.route('/abis', methods=['GET'])
 def get_abis():
@@ -36,8 +37,12 @@ def get_abis():
 def get_fetched_blocks():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    blocks = FetchedBlock.query.order_by(FetchedBlock.fetched_dt.desc()).paginate(page=page, per_page=per_page, error_out=False)
-    data = [{'fetched_dt': block.fetched_dt, 'block_number': block.block_number} for block in blocks.items]
+    pagination = FetchedBlock.query.order_by(FetchedBlock.fetched_dt.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    data = {
+        'items': [{'fetched_dt': block.fetched_dt, 'block_number': block.block_number} for block in pagination.items],
+        'total_pages': pagination.pages,
+        'current_page': pagination.page
+    }
     return jsonify(data)
 
 @app.route('/marketplaces', methods=['GET'])

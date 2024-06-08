@@ -12,7 +12,7 @@ import {
     DialogContent,
     DialogTitle,
     Button,
-    DialogActions
+    DialogActions, Divider
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import TransactionDetail from "./TransactionDetail";
@@ -58,21 +58,42 @@ function BlockDetail() {
                     <Grid item xs={12} sm={6} md={4} key={index}>
                         <Card raised sx={{ backgroundColor: theme.palette.background.paper, cursor: 'pointer' }} onClick={() => handleOpenTransaction(transaction)}>
                             <CardContent>
-                                <Typography variant="h6" gutterBottom>
-                                    Transaction Hash: <Chip label={transaction.transaction_hash} variant="outlined" color="primary" />
-                                </Typography>
-                                <Typography variant="body2">
-                                    From: <Chip label={transaction.from_address} variant="outlined" color="warning" />
-                                </Typography>
-                                <Typography variant="body2">
-                                    To: <Chip label={transaction.to_address} variant="outlined" color="info" />
-                                </Typography>
-                                <Typography variant="body2">
-                                    Value: {transaction.value} ETH
-                                </Typography>
-                                <Typography variant="body2">
-                                    Gas Used: {transaction.gas}
-                                </Typography>
+                                <Grid container spacing={2} alignItems="center">
+                                    <Grid item xs={4}>
+                                        <Typography variant="body1" sx={{fontWeight: 'bold'}}>Transaction Hash:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Chip label={transaction.transaction_hash} variant="outlined" color="primary" />
+                                    </Grid>
+                                    <Divider sx={{my: 1, width: '100%'}}/>
+                                    <Grid item xs={4}>
+                                        <Typography variant="body1" sx={{fontWeight: 'bold'}}>From:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Chip label={transaction.from_address} variant="outlined" color="warning" />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Typography variant="body1" sx={{fontWeight: 'bold'}}>To:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Chip label={transaction.to_address} variant="outlined" color="info" />
+                                    </Grid>
+                                    <Divider sx={{my: 1, width: '100%'}}/>
+                                    <Grid item xs={4}>
+                                        <Typography variant="body1" sx={{fontWeight: 'bold'}}>Value in ETH:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        {transaction.value}
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Typography variant="body1" sx={{fontWeight: 'bold'}}>Gas Used:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        {transaction.gas}
+                                    </Grid>
+
+                                    <Divider sx={{my: 1, width: '100%'}}/>
+                                </Grid>
                             </CardContent>
                         </Card>
                     </Grid>

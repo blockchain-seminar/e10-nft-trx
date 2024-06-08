@@ -1,6 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Card, CardContent, Typography, CircularProgress, Chip, Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
+import {
+    Box,
+    Card,
+    CardContent,
+    Typography,
+    CircularProgress,
+    Chip,
+    Grid,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+    Button,
+    Divider
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
+import {Link as RouterLink} from "react-router-dom";
 
 const StyledCard = styled(Card)({
     '&:hover': {
@@ -49,13 +65,29 @@ function ABIs() {
                     <Grid item xs={12} sm={6} md={4} key={index}>
                         <StyledCard raised onClick={() => handleClickOpen(abi)}>
                             <CardContent>
-                                <Typography variant="h6" gutterBottom>
-                                    {abi.name}
-                                </Typography>
-                                <Typography variant="subtitle1" color="text.secondary">
-                                    Type: {abi.type}
-                                </Typography>
-                                <Chip label={`Address: ${abi.contract_address}`} variant="outlined" color="success" />
+                                <Grid container spacing={2} alignItems="center">
+                                    <Grid item xs={4}>
+                                        <Typography variant="body1" sx={{fontWeight: 'bold'}}>ABI:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        {abi.name}
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Typography variant="body1" sx={{fontWeight: 'bold'}}>Type:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        {abi.type}
+                                    </Grid>
+                                    <Divider sx={{my: 1, width: '100%'}}/>
+
+                                    <Grid item xs={4}>
+                                        <Typography variant="body1" sx={{fontWeight: 'bold'}}>Address:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Chip label={`Address: ${abi.contract_address}`} variant="outlined" color="success" />
+                                    </Grid>
+                                    <Divider sx={{my: 1, width: '100%'}}/>
+                                </Grid>
                             </CardContent>
                         </StyledCard>
                     </Grid>
@@ -66,9 +98,29 @@ function ABIs() {
                     <DialogTitle id="dialog-title">{"ABI Event Details"}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="dialog-description">
-                            Name: {selectedABI.name}<br/>
-                            Type: {selectedABI.type}<br/>
-                            <Chip label={`Address: ${selectedABI.contract_address}`} variant="outlined" color="success" />
+                            <Grid container spacing={2} alignItems="center">
+                                <Grid item xs={4}>
+                                    <Typography variant="body1" sx={{fontWeight: 'bold'}}>ABI:</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    {selectedABI.name}
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography variant="body1" sx={{fontWeight: 'bold'}}>Type:</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    {selectedABI.type}
+                                </Grid>
+                                <Divider sx={{my: 1, width: '100%'}}/>
+
+                                <Grid item xs={4}>
+                                    <Typography variant="body1" sx={{fontWeight: 'bold'}}>Address:</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <Chip label={`Address: ${selectedABI.contract_address}`} variant="outlined" color="success" />
+                                </Grid>
+                                <Divider sx={{my: 1, width: '100%'}}/>
+                            </Grid>
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>

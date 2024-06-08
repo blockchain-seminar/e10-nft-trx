@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Typography, Card, CardContent, Chip, Pagination, Grid, useTheme,
-    Link as MuiLink
+    Link as MuiLink, Divider
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -14,12 +14,13 @@ function Blocks() {
     const fetchBlocks = (page) => {
         fetch(`http://127.0.0.1:5000/blocks/fetched?page=${page}&per_page=10`)
             .then(response => response.json())
-            .then(data => {
-                setBlocks(data);
-                setTotalPages(3); // Adjust based on your actual data
+            .then(({ items, total_pages }) => {
+                setBlocks(items);
+                setTotalPages(total_pages);
             })
             .catch(error => console.error('Error fetching blocks:', error));
     };
+
 
     const handleChangePage = (event, value) => {
         setPage(value);
@@ -47,10 +48,22 @@ function Blocks() {
                                 cursor: 'pointer'
                             }}>
                                 <CardContent>
-                                    <Typography variant="h6" gutterBottom>
-                                        Block Number: {block.block_number}
-                                    </Typography>
-                                    <Chip label={`Fetched Date: ${block.fetched_dt}`} variant="outlined" color="secondary" />
+                                    <Grid container spacing={2} alignItems="center">
+                                        <Grid item xs={4}>
+                                            <Typography variant="body1" sx={{fontWeight: 'bold'}}>Block Number:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Chip label={block.block_number} variant={"outlined"} />
+                                        </Grid>
+                                        <Divider sx={{my: 1, width: '100%'}}/>
+                                        <Grid item xs={4}>
+                                            <Typography variant="body1" sx={{fontWeight: 'bold'}}>Fetched Date:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Chip label={`${block.fetched_dt}`} variant="outlined" color="secondary" />
+                                        </Grid>
+                                        <Divider sx={{my: 1, width: '100%'}}/>
+                                    </Grid>
                                 </CardContent>
                             </Card>
                         </RouterLink>

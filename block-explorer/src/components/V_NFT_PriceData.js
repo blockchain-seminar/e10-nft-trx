@@ -123,7 +123,7 @@ function V_NFT_PriceData() {
             </Grid>
             {selectedData && (
                 <Dialog open={Boolean(selectedData)} onClose={handleCloseDetails} fullWidth maxWidth="md">
-                    <DialogTitle>Transaction Details</DialogTitle>
+                    <DialogTitle>NFT Price Details</DialogTitle>
                     <DialogContent dividers>
                         <Grid container spacing={2} alignItems="center">
                             <Grid item xs={4}>
@@ -149,7 +149,19 @@ function V_NFT_PriceData() {
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>ETH:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Chip label={`${selectedData.transaction_value_eth}`} variant="outlined" color="default"/>
+                                <Chip label={`${selectedData.transaction_value_eth|| "Unknown"}`} variant="outlined" color="default"/>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Action:</Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Chip label={`${selectedData.transaction_action_value|| "Unknown"}`} variant="outlined" color="secondary"/>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Other Currency:</Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Chip label={`${selectedData?.transaction_action_currency|| "Unknown"}`} variant="outlined" color="secondary"/>
                             </Grid>
                             <Divider sx={{ my: 1, width: '100%' }}/>
                             <Grid item xs={4}>
@@ -165,6 +177,18 @@ function V_NFT_PriceData() {
                                 <Chip label={selectedData.nft_to_address || "Unknown"} variant="outlined" color="info"/>
                             </Grid>
                             <Grid item xs={4}>
+                                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Transaction Initiator:</Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Chip label={selectedData?.transaction_initiator || "Unknown"} variant="outlined" color="success"/>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Transaction Interacted Contract:</Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Chip label={selectedData?.transaction_interacted_contract || "Unknown"} variant="outlined" color="success"/>
+                            </Grid>
+                            <Grid item xs={4}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Collection:</Typography>
                             </Grid>
                             <Grid item xs={8}>
@@ -177,6 +201,24 @@ function V_NFT_PriceData() {
                                 <Chip label={selectedData.nft_token_id || "Unknown"} variant="outlined" color="default"/>
                             </Grid>
                             <Divider sx={{ my: 1, width: '100%' }}/>
+                            <Grid item xs={4}>
+                                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Create Date:</Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Chip label={selectedData.create_dt || "Unknown"} variant="outlined" color="default"/>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Log Index:</Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Chip label={selectedData.log_index || "Unknown"} variant="outlined" color="default"/>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Marketplace:</Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Chip label={selectedData.marketplace || "Unknown"} variant="outlined" color="secondary"/>
+                            </Grid>
                         </Grid>
                     </DialogContent>
                     <DialogActions>

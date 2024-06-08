@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import {Link as RouterLink, useParams} from 'react-router-dom';
 import {
-    Card, CardContent, Typography, CircularProgress, Chip, Stack, Divider, Accordion, AccordionSummary, AccordionDetails, useTheme
+    Card,
+    CardContent,
+    Typography,
+    CircularProgress,
+    Chip,
+    Stack,
+    Divider,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    useTheme,
+    Grid
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box } from '@mui/system';
@@ -47,49 +58,76 @@ function TransactionDetail({selectedTransaction}) {
                         </Typography>
                         <Divider sx={{ my: 2 }} />
                     </> }
-                    <Stack spacing={2} divider={<Divider flexItem />}>
-                        {/* Essential Information */}
-                        <Typography variant="subtitle1">
-                            <strong>Block Number:</strong> {transaction?.block_number}
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            <strong>Chain ID:</strong> {transaction?.chain_id}
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            <strong>From:</strong> <Chip label={transaction?.from_address} variant="outlined" color="warning" />
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            <strong>To:</strong> <Chip label={transaction?.to_address} variant="outlined" color="info" />
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            <strong>Gas:</strong> {transaction?.gas}
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            <strong>Gas Price:</strong> {transaction?.gas_price}
-                        </Typography>
+                    <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={4}>
+                            <Typography variant="body1" sx={{fontWeight: 'bold'}}>Block Number:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <Chip label={transaction?.block_number} variant={"outlined"} />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Typography variant="body1" sx={{fontWeight: 'bold'}}>Chain ID:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            {transaction?.chain_id}
+                        </Grid>
 
-                        {/* Accordion for Additional Details */}
-                        <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography>More Information</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Stack spacing={1}>
-                                    {Object.entries(transaction || {}).map(([key, value]) => {
-                                        if (!['block_number', 'chain_id', 'from_address', 'to_address', 'gas', 'gas_price'].includes(key)) {
-                                            return (
-                                                <Typography key={key} variant="body2">
-                                                    <strong>{key.replace(/_/g, ' ').toUpperCase()}:</strong>
-                                                    {value}
-                                                </Typography>
-                                            );
-                                        }
-                                        return null;
-                                    })}
-                                </Stack>
-                            </AccordionDetails>
-                        </Accordion>
-                    </Stack>
+                        <Divider sx={{my: 1, width: '100%'}}/>
+
+                        <Grid item xs={4}>
+                            <Typography variant="body1" sx={{fontWeight: 'bold'}}>From:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <Chip label={transaction?.from_address} variant="outlined" color="warning" />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Typography variant="body1" sx={{fontWeight: 'bold'}}>To:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <Chip label={transaction?.to_address} variant="outlined" color="info" />
+                        </Grid>
+
+                        <Divider sx={{my: 1, width: '100%'}}/>
+
+                        <Grid item xs={4}>
+                            <Typography variant="body1" sx={{fontWeight: 'bold'}}>Gas:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            {transaction?.gas}
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <Typography variant="body1" sx={{fontWeight: 'bold'}}>Gas Price:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            {transaction?.gas_price}
+                        </Grid>
+
+                        <Divider sx={{my: 1, width: '100%'}}/>
+
+                        <Grid item xs={12}>
+                            <Accordion>
+                                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                    <Typography>More Information</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Stack spacing={1}>
+                                        {Object.entries(transaction || {}).map(([key, value]) => {
+                                            if (!['block_number', 'chain_id', 'from_address', 'to_address', 'gas', 'gas_price'].includes(key)) {
+                                                return (
+                                                    <Typography key={key} variant="body2">
+                                                        <strong>{key.replace(/_/g, ' ').toUpperCase()}:</strong>
+                                                        <span style={{lineBreak: "anywhere"}}>{value}</span>
+                                                    </Typography>
+                                                );
+                                            }
+                                            return null;
+                                        })}
+                                    </Stack>
+                                </AccordionDetails>
+                            </Accordion>
+                        </Grid>
+                    </Grid>
                 </CardContent>
             </Card>
         </Box>
