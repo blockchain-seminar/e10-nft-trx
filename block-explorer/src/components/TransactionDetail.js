@@ -56,10 +56,10 @@ function TransactionDetail({selectedTransaction}) {
                             <strong>Chain ID:</strong> {transaction?.chain_id}
                         </Typography>
                         <Typography variant="subtitle1">
-                            <strong>From:</strong> <Chip label={transaction?.from_address} variant="outlined" color="primary" />
+                            <strong>From:</strong> <Chip label={transaction?.from_address} variant="outlined" color="warning" />
                         </Typography>
                         <Typography variant="subtitle1">
-                            <strong>To:</strong> <Chip label={transaction?.to_address} variant="outlined" color="secondary" />
+                            <strong>To:</strong> <Chip label={transaction?.to_address} variant="outlined" color="info" />
                         </Typography>
                         <Typography variant="subtitle1">
                             <strong>Gas:</strong> {transaction?.gas}

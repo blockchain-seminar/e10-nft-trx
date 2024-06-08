@@ -47,7 +47,7 @@ function Marketplaces() {
                                 <Typography variant="h6">{market.name}</Typography>
                                 <Typography>Protocol: {market.protocol}</Typography>
                                 <Typography>Version: {market.version}</Typography>
-                                <Chip label={`Contract Address: ${market.contract_address}`} color="primary" />
+                                <Chip label={`Contract Address: ${market.contract_address}`} variant="outlined" color="success" />
                                 <Typography>Creation Date: {market.create_dt}</Typography>
                             </CardContent>
                         </Card>
@@ -62,7 +62,7 @@ function Marketplaces() {
                             Name: {selectedMarketplace.name}<br />
                             Protocol: {selectedMarketplace.protocol}<br />
                             Version: {selectedMarketplace.version}<br />
-                            Contract Address: {selectedMarketplace.contract_address}<br />
+                            <Chip label={`Contract Address: ${selectedMarketplace.contract_address}`} variant="outlined" color="success" /><br />
                             Creation Date: {selectedMarketplace.create_dt}
                         </DialogContentText>
                     </DialogContent>

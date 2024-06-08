@@ -37,11 +37,9 @@ function Transactions() {
                     <Grid item xs={12} md={6} key={tx.transaction_hash}>
                         <Card raised sx={{ backgroundColor: theme.palette.background.paper }}>
                             <CardContent>
-                                <Link component={RouterLink} to={`/transactions/${tx.transaction_hash}`} color="primary">
-                                    <Typography variant="h6" gutterBottom>
-                                        {tx.transaction_hash}
-                                    </Typography>
-                                </Link>
+                                <Typography variant="h6" gutterBottom>
+                                    Transaction: <Chip label={tx.transaction_hash} component={RouterLink} to={`/transactions/${tx.transaction_hash}`} clickable variant="outlined" color="primary"/>
+                                </Typography>
                                 <Typography variant="body2" color="text.secondary">
                                     Block Number: <Chip label={tx.block_number} size="small" />
                                 </Typography>

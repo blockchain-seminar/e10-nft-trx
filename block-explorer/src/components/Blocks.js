@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Card, CardContent, Chip, Pagination, Stack, Grid, useTheme, Button } from '@mui/material';
+import {
+    Typography, Card, CardContent, Chip, Pagination, Grid, useTheme,
+    Link as MuiLink
+} from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 function Blocks() {
@@ -13,19 +16,18 @@ function Blocks() {
             .then(response => response.json())
             .then(data => {
                 setBlocks(data);
-                setTotalPages(3); // Assuming there are 3 pages total, adjust based on actual data
+                setTotalPages(3); // Adjust based on your actual data
             })
             .catch(error => console.error('Error fetching blocks:', error));
     };
-
-    useEffect(() => {
-        fetchBlocks(page);
-    }, [page]);
 
     const handleChangePage = (event, value) => {
         setPage(value);
         fetchBlocks(value);
     };
+    useEffect(() => {
+        fetchBlocks(page);
+    }, [page]);
 
     return (
         <div style={{ margin: theme.spacing(3) }}>
@@ -35,28 +37,33 @@ function Blocks() {
             <Grid container spacing={2}>
                 {blocks.map((block, index) => (
                     <Grid item xs={12} md={6} key={index}>
-                        <Card raised sx={{ backgroundColor: theme.palette.background.paper, transition: "0.3s", '&:hover': { boxShadow: theme.shadows[10] }}}>
-                            <CardContent>
-                                <Typography variant="h6" gutterBottom>
-                                    Block Number: {block.block_number}
-                                </Typography>
-                                <Chip label={`Fetched Date: ${block.fetched_dt}`} color="secondary" />
-                                <br />
-                                <Button
-                                    component={RouterLink}
-                                    to={`/blocks/${block.block_number}`}
-                                    variant="outlined"
-                                    color="primary"
-                                    sx={{ mt: 2 }}
-                                >
-                                    View Transactions
-                                </Button>
-                            </CardContent>
-                        </Card>
+                        <RouterLink to={`/blocks/${block.block_number}`} style={{ textDecoration: 'none' }}>
+                            <Card raised sx={{
+                                backgroundColor: theme.palette.background.paper,
+                                transition: "0.3s",
+                                '&:hover': {
+                                    boxShadow: theme.shadows[10]
+                                },
+                                cursor: 'pointer'
+                            }}>
+                                <CardContent>
+                                    <Typography variant="h6" gutterBottom>
+                                        Block Number: {block.block_number}
+                                    </Typography>
+                                    <Chip label={`Fetched Date: ${block.fetched_dt}`} variant="outlined" color="secondary" />
+                                </CardContent>
+                            </Card>
+                        </RouterLink>
                     </Grid>
                 ))}
             </Grid>
-            <Pagination count={totalPages} page={page} onChange={handleChangePage} color="primary" sx={{ display: 'flex', justifyContent: 'center', mt: 2 }} />
+            <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handleChangePage}
+                color="primary"
+                sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
+            />
         </div>
     );
 }

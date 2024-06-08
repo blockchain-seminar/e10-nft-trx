@@ -55,7 +55,7 @@ function ABIs() {
                                 <Typography variant="subtitle1" color="text.secondary">
                                     Type: {abi.type}
                                 </Typography>
-                                <Chip label={`Address: ${abi.contract_address}`} color="primary" />
+                                <Chip label={`Address: ${abi.contract_address}`} variant="outlined" color="success" />
                             </CardContent>
                         </StyledCard>
                     </Grid>
@@ -68,7 +68,7 @@ function ABIs() {
                         <DialogContentText id="dialog-description">
                             Name: {selectedABI.name}<br/>
                             Type: {selectedABI.type}<br/>
-                            Contract Address: {selectedABI.contract_address}
+                            <Chip label={`Address: ${selectedABI.contract_address}`} variant="outlined" color="success" />
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>

@@ -62,10 +62,10 @@ function BlockDetail() {
                                     Transaction Hash: <Chip label={transaction.transaction_hash} variant="outlined" color="primary" />
                                 </Typography>
                                 <Typography variant="body2">
-                                    From: <Chip label={transaction.from_address} color="secondary" />
+                                    From: <Chip label={transaction.from_address} variant="outlined" color="warning" />
                                 </Typography>
                                 <Typography variant="body2">
-                                    To: <Chip label={transaction.to_address} color="secondary" />
+                                    To: <Chip label={transaction.to_address} variant="outlined" color="info" />
                                 </Typography>
                                 <Typography variant="body2">
                                     Value: {transaction.value} ETH
