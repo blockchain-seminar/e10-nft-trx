@@ -3,8 +3,10 @@ from class_definitions import db, Transaction, VnftPriceData, Marketplace, Fetch
 from data_processing import enrich, fetch_and_process_receipts, fetch_and_store_transactions_in_block_range
 from db_connections import get_latest_blocks, read_from_db
 from utils import setup_logger
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../e10.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
@@ -50,18 +52,45 @@ def get_marketplaces():
 def get_price_data():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    price_data = VnftPriceData.query.paginate(page=page, per_page=per_page, error_out=False)
-    data = [{column.name: getattr(entry, column.name) for column in entry.__table__.columns} for entry in price_data.items]
-    return jsonify(data)
+    pagination = VnftPriceData.query.paginate(page=page, per_page=per_page, error_out=False)
+    data = [{
+        column.name: getattr(entry, column.name) for column in entry.__table__.columns
+    } for entry in pagination.items]
+    return jsonify({
+        'items': data,
+        'total_pages': pagination.pages,
+        'current_page': pagination.page,
+        'has_next': pagination.has_next,
+        'has_prev': pagination.has_prev
+    })
 
+def binary_to_hex(value):
+    return value.hex() if isinstance(value, bytes) else value
 @app.route('/transactions/<transaction_hash>', methods=['GET'])
 def get_transaction_details(transaction_hash):
     transaction = Transaction.query.filter_by(transaction_hash=transaction_hash).first()
     if transaction:
-        data = {column.name: getattr(transaction, column.name) for column in transaction.__table__.columns}
+        data = {col: binary_to_hex(getattr(transaction, col)) for col in transaction.__table__.columns.keys()}
         return jsonify(data)
     else:
         return jsonify({"error": "Transaction not found"}), 404
+
+@app.route('/blocks/<int:block_number>/transactions', methods=['GET'])
+def get_block_transactions(block_number):
+    # Query all transactions for the specified block number
+    transactions = Transaction.query.filter_by(block_number=block_number).all()
+
+    # Check if any transactions were found
+    if transactions:
+        # Prepare data for JSON serialization
+        data = [
+            {col.name: binary_to_hex(getattr(tx, col.name)) for col in Transaction.__table__.columns}
+            for tx in transactions
+        ]
+        return jsonify(data)
+    else:
+        return jsonify({"error": "No transactions found for the specified block number"}), 404
+
 
 import threading
 

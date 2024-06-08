@@ -26,7 +26,7 @@ class Transaction(db.Model):
     y_parity = Column(Integer)
 
 class VnftPriceData(db.Model):
-    __tablename__ = 'vnft_price_data'
+    __tablename__ = 'v_nft_price_data'
     create_dt = Column(TIMESTAMP)
     log_index = Column(Integer, primary_key=True)
     transaction_hash = Column(TEXT)

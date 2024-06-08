@@ -6,3 +6,4 @@ sqlalchemy
 requests
 tqdm
 python-dotenv
+flask-cors
