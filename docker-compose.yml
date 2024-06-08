@@ -10,7 +10,7 @@ services:
       - "5000:5000"
     environment:
       - FLASK_ENV=development
-      - FLASK_APP=main.py
+      - FLASK_APP=endpoints.py
     command: flask run --host=0.0.0.0
 
   frontend:
