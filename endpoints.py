@@ -57,7 +57,7 @@ def get_marketplaces():
 def get_price_data():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    pagination = VnftPriceData.query.paginate(page=page, per_page=per_page, error_out=False)
+    pagination = VnftPriceData.query.order_by(VnftPriceData.create_dt.desc()).paginate(page=page, per_page=per_page, error_out=False)
     data = [{
         column.name: getattr(entry, column.name) for column in entry.__table__.columns
     } for entry in pagination.items]

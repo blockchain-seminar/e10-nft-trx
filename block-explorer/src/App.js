@@ -48,24 +48,24 @@ function App() {
                         <Typography variant="h6" color="inherit" noWrap>
                             NFT TRX Explorer
                         </Typography>
-                        <Link component={NavLink} to="/price_data" color="inherit" style={{ marginLeft: 20 }}>
-                            NFT Price Data
-                        </Link>
-                        <Link component={NavLink} to="/transactions" color="inherit" style={{ marginLeft: 20 }}>
-                            Transactions
-                        </Link>
-                        <Link component={NavLink} to="/blocks" color="inherit" style={{ marginLeft: 20 }}>
-                            Blocks
-                        </Link>
-                        <Link component={NavLink} to="/marketplaces" color="inherit" style={{ marginLeft: 20 }}>
-                            Marketplaces
-                        </Link>
-                        <Link component={NavLink} to="/abis" color="inherit" style={{ marginLeft: 20 }}>
-                            ABIs
-                        </Link>
-                        <Link component={NavLink} to="/updatedb" color="inherit" style={{ marginLeft: 20 }}>
-                            Update the Block Database
-                        </Link>
+                        {['/Price_Data', '/Transactions', '/Blocks', '/Marketplaces', '/ABIs', '/Update_DB'].map((path, index) => (
+                            <Link
+                                key={index}
+                                component={NavLink}
+                                to={path.toLowerCase()}
+                                color="inherit"
+                                style={{ marginLeft: 20 }}
+                                sx={{
+                                    textDecoration: 'none',
+                                    '&.active': {
+                                        color: darkTheme.palette.secondary.main,
+                                        textDecoration: 'underline'
+                                    }
+                                }}
+                            >
+                                {path.substr(1).replace(/_/g, ' ')}
+                            </Link>
+                        ))}
                     </Toolbar>
                 </AppBar>
                 <Container>
@@ -77,7 +77,7 @@ function App() {
                         <Route path="/blocks" element={<Blocks />} />
                         <Route path="/marketplaces" element={<Marketplaces />} />
                         <Route path="/abis" element={<ABIs />} />
-                        <Route path="/updatedb" element={<DataProcessingForm />} />
+                        <Route path="/update_db" element={<DataProcessingForm />} />
                     </Routes>
                 </Container>
             </Router>
