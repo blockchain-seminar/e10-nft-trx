@@ -1,6 +1,16 @@
-import React from 'react';
-import { CssBaseline, Container, AppBar, Toolbar, Typography, Link, ThemeProvider, createTheme } from '@mui/material';
-import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import React, {useState} from 'react';
+import {
+    CssBaseline,
+    Container,
+    AppBar,
+    Toolbar,
+    Typography,
+    Link,
+    ThemeProvider,
+    createTheme,
+    InputBase, Button
+} from '@mui/material';
+import {BrowserRouter as Router, Routes, Route, NavLink} from 'react-router-dom';
 
 import Transactions from './components/Transactions';
 import Blocks from './components/Blocks';
@@ -11,6 +21,7 @@ import BlockDetail from "./components/BlockDetail";
 import V_NFT_PriceData from "./components/V_NFT_PriceData";
 import DataProcessingForm from "./components/DataProcessingForm";
 import AddressAnalytics from "./components/AddressAnalytics";
+import SearchResults from "./components/SearchResults";
 
 // Create a theme instance.
 const darkTheme = createTheme({
@@ -40,6 +51,9 @@ const darkTheme = createTheme({
 });
 
 function App() {
+    const [searchTerm, setSearchTerm] = useState('');
+
+
     return (
         <ThemeProvider theme={darkTheme}>
             <Router>
@@ -67,6 +81,14 @@ function App() {
                                 {path.substr(1).replace(/_/g, ' ')}
                             </Link>
                         ))}
+                        <InputBase
+                            placeholder="Search…"
+                            inputProps={{ 'aria-label': 'search' }}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{ marginLeft: 20, flex: 1 }}
+                        />
+                        <Link component={NavLink} to={`/search_results/${searchTerm}`} sx={{textDecoration: 'none'}}>Search</Link>
                     </Toolbar>
                 </AppBar>
                 <Container>
@@ -80,6 +102,7 @@ function App() {
                         <Route path="/abis" element={<ABIs />} />
                         <Route path="/update_db" element={<DataProcessingForm />} />
                         <Route path="/address_analytics/:address" element={<AddressAnalytics />} />
+                        <Route path="/search_results/:query" element={<SearchResults />} />
                     </Routes>
                 </Container>
             </Router>

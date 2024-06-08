@@ -7,8 +7,8 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////app/e10.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///e10.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////app/e10.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///e10.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 # app.config.from_pyfile('config.py')
@@ -159,6 +159,41 @@ def get_price_data_by_address():
     } for entry in pagination.items]
 
     # Return JSON response with pagination details
+    return jsonify({
+        'items': data,
+        'total_pages': pagination.pages,
+        'current_page': pagination.page,
+        'has_next': pagination.has_next,
+        'has_prev': pagination.has_prev
+    })
+
+
+@app.route('/search_price_data', methods=['GET'])
+def search_price_data():
+    search_query = request.args.get('query', '')
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    if search_query == '':
+        return jsonify({"error": "Empty search query"}), 400
+
+    like_pattern = f"%{search_query}%"
+    query = VnftPriceData.query.filter(
+        db.or_(
+            VnftPriceData.transaction_initiator.like(like_pattern),
+            VnftPriceData.transaction_interacted_contract.like(like_pattern),
+            VnftPriceData.nft_to_address.like(like_pattern),
+            VnftPriceData.nft_from_address.like(like_pattern),
+            VnftPriceData.nft_collection.like(like_pattern),
+            VnftPriceData.transaction_hash.like(like_pattern)
+        )
+    ).order_by(VnftPriceData.create_dt.desc())
+
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    data = [{
+        column.name: getattr(entry, column.name) for column in entry.__table__.columns
+    } for entry in pagination.items]
+
     return jsonify({
         'items': data,
         'total_pages': pagination.pages,
