@@ -10,6 +10,7 @@ import TransactionDetail from './components/TransactionDetail';
 import BlockDetail from "./components/BlockDetail";
 import V_NFT_PriceData from "./components/V_NFT_PriceData";
 import DataProcessingForm from "./components/DataProcessingForm";
+import AddressAnalytics from "./components/AddressAnalytics";
 
 // Create a theme instance.
 const darkTheme = createTheme({
@@ -78,6 +79,7 @@ function App() {
                         <Route path="/marketplaces" element={<Marketplaces />} />
                         <Route path="/abis" element={<ABIs />} />
                         <Route path="/update_db" element={<DataProcessingForm />} />
+                        <Route path="/address_analytics/:address" element={<AddressAnalytics />} />
                     </Routes>
                 </Container>
             </Router>

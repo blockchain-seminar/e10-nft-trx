@@ -7,7 +7,8 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////app/e10.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////app/e10.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///e10.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 # app.config.from_pyfile('config.py')
@@ -129,6 +130,42 @@ def process_data_endpoint():
     thread.start()
 
     return jsonify({"status": "Process started"}), 202
+
+
+@app.route('/analytics/price_data_by_address', methods=['GET'])
+def get_price_data_by_address():
+    address = request.args.get('address')
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    if not address:
+        return jsonify({"error": "No address provided"}), 400
+
+    # Query filtering by multiple possible fields
+    query = VnftPriceData.query.filter(
+        db.or_(
+            VnftPriceData.transaction_initiator == address,
+            VnftPriceData.transaction_interacted_contract == address,
+            VnftPriceData.nft_to_address == address,
+            VnftPriceData.nft_from_address == address,
+            VnftPriceData.nft_collection == address
+        )
+    ).order_by(VnftPriceData.create_dt.desc())
+
+    # Pagination
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    data = [{
+        column.name: getattr(entry, column.name) for column in entry.__table__.columns
+    } for entry in pagination.items]
+
+    # Return JSON response with pagination details
+    return jsonify({
+        'items': data,
+        'total_pages': pagination.pages,
+        'current_page': pagination.page,
+        'has_next': pagination.has_next,
+        'has_prev': pagination.has_prev
+    })
 
 
 if __name__ == '__main__':

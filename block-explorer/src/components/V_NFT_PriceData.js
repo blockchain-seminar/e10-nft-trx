@@ -14,7 +14,7 @@ import {
     Divider,
     DialogActions
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 
 function V_NFT_PriceData() {
     const [priceData, setPriceData] = useState([]);
@@ -22,6 +22,7 @@ function V_NFT_PriceData() {
     const [selectedData, setSelectedData] = useState(null);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(`http://127.0.0.1:5000/price_data?page=${page}&per_page=10`)
@@ -47,6 +48,10 @@ function V_NFT_PriceData() {
 
     const handleChangePage = (event, value) => {
         setPage(value);
+    };
+
+    const handleChipClick = (address) => {
+        navigate(`/address_analytics/${address}`);
     };
 
     if (loading) return <CircularProgress />;
@@ -91,19 +96,19 @@ function V_NFT_PriceData() {
                                     <Typography variant="body1" sx={{ fontWeight: 'bold' }}>From:</Typography>
                                 </Grid>
                                 <Grid item xs={8}>
-                                    <Chip label={data.nft_from_address || "Unknown"} variant="outlined" color="warning"/>
+                                    <Chip label={data.nft_from_address || "Unknown"} variant="outlined" color="warning" clickable onClick={() => handleChipClick(data.nft_from_address)}/>
                                 </Grid>
                                 <Grid item xs={4}>
                                     <Typography variant="body1" sx={{ fontWeight: 'bold' }}>To:</Typography>
                                 </Grid>
                                 <Grid item xs={8}>
-                                    <Chip label={data.nft_to_address || "Unknown"} variant="outlined" color="info"/>
+                                    <Chip label={data.nft_to_address || "Unknown"} variant="outlined" color="info" clickable onClick={() => handleChipClick(data.nft_to_address)}/>
                                 </Grid>
                                 <Grid item xs={4}>
                                     <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Collection:</Typography>
                                 </Grid>
                                 <Grid item xs={8}>
-                                    <Chip label={data.nft_collection || "Unknown"} variant="outlined" color="success"/>
+                                    <Chip label={data.nft_collection || "Unknown"} variant="outlined" color="success" clickable onClick={() => handleChipClick(data.nft_collection)}/>
                                 </Grid>
                                 <Grid item xs={4}>
                                     <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Token ID:</Typography>
@@ -168,31 +173,31 @@ function V_NFT_PriceData() {
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>From:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Chip label={selectedData.nft_from_address || "Unknown"} variant="outlined" color="warning"/>
+                                <Chip label={selectedData.nft_from_address || "Unknown"} variant="outlined" color="warning" clickable onClick={() => handleChipClick(selectedData.nft_from_address)}/>
                             </Grid>
                             <Grid item xs={4}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>To:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Chip label={selectedData.nft_to_address || "Unknown"} variant="outlined" color="info"/>
+                                <Chip label={selectedData.nft_to_address || "Unknown"} variant="outlined" color="info" clickable onClick={() => handleChipClick(selectedData.nft_to_address)}/>
                             </Grid>
                             <Grid item xs={4}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Transaction Initiator:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Chip label={selectedData?.transaction_initiator || "Unknown"} variant="outlined" color="success"/>
+                                <Chip label={selectedData?.transaction_initiator || "Unknown"} variant="outlined" color="success" clickable onClick={() => handleChipClick(selectedData.transaction_initiator)}/>
                             </Grid>
                             <Grid item xs={4}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Transaction Interacted Contract:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Chip label={selectedData?.transaction_interacted_contract || "Unknown"} variant="outlined" color="success"/>
+                                <Chip label={selectedData?.transaction_interacted_contract || "Unknown"} variant="outlined" color="success" clickable onClick={() => handleChipClick(selectedData.interacted_contract)}/>
                             </Grid>
                             <Grid item xs={4}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Collection:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Chip label={selectedData.nft_collection || "Unknown"} variant="outlined" color="success"/>
+                                <Chip label={selectedData.nft_collection || "Unknown"} variant="outlined" color="success" clickable onClick={() => handleChipClick(selectedData.nft_collection)}/>
                             </Grid>
                             <Grid item xs={4}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Token ID:</Typography>
