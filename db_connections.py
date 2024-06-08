@@ -10,7 +10,7 @@ logger = setup_logger()
 # Retrieves aggregated data (like max or min) of block numbers from the 'fetched_blocks' table. Closes the connection after fetching data. Returns None if an error occurs
 def get_fetched_blocks(agg):
   try:
-    conn = sql.connect("e10.db")
+    conn = sql.connect("./e10.db")
     cursor = conn.cursor()
     query = f"select {agg}(block_number) from fetched_blocks"
     cursor.execute(query)
@@ -23,14 +23,14 @@ def get_fetched_blocks(agg):
 
 # Fetches all records from the 'fetched_transactions' table and returns them as a DataFrame. Closes the connection after fetching data.
 def get_fetched_transactions():
-  conn = sql.connect("e10.db")
+  conn = sql.connect("./e10.db")
   cursor = conn.cursor()
   df = pd.read_sql_query("SELECT * FROM transactions", conn)
   conn.close()
   return df
 
 def get_marketplaces():
-  conn = sql.connect("e10.db")
+  conn = sql.connect("./e10.db")
   cursor = conn.cursor()
   df = pd.read_sql_query("SELECT * FROM marketplaces", conn)
   conn.close()
@@ -39,7 +39,7 @@ def get_marketplaces():
 # Appends a DataFrame to a specified table within the database. If the table does not exist, it is created. Closes the connection after writing. Prints an error message if an operation fails
 def write_to_db(df, table_name):
   try:
-    conn = sql.connect("e10.db")
+    conn = sql.connect("./e10.db")
     cursor = conn.cursor()
     cnt = df.to_sql(name=table_name, con=conn, if_exists='append', index=False)
     logger.info(f'inserted {cnt} rows into table {table_name}') 
@@ -52,7 +52,7 @@ def write_to_db(df, table_name):
 def read_from_db(query):
   try:
     logger.info(f'execute query: {query}') 
-    conn = sql.connect("e10.db")
+    conn = sql.connect("./e10.db")
     cursor = conn.cursor()
     cursor.execute(query)
     rows = cursor.fetchall()
@@ -65,7 +65,7 @@ def read_from_db(query):
 def update_db(query):
   try:
     logger.info(f'execute query: {query}') 
-    conn = sql.connect("e10.db")
+    conn = sql.connect("./e10.db")
     cursor = conn.cursor()
     cursor.execute(query)
     conn.commit()
