@@ -11,7 +11,7 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_APP=endpoints.py
-      - SQLALCHEMY_DATABASE_URI=sqlite:///e10.db
+      - SQLALCHEMY_DATABASE_URI=sqlite:////app/e10.db
       - SQLALCHEMY_TRACK_MODIFICATIONS=False
     command: flask run --host=0.0.0.0
 
