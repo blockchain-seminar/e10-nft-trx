@@ -1,4 +1,6 @@
 import argparse
+
+import tqdm
 from data_processing import enrich, fetch_and_process_receipts, fetch_and_store_transactions_in_block_range
 from db_connections import get_latest_blocks, read_from_db
 from utils import setup_logger
@@ -14,7 +16,7 @@ def main(mode,n):
             fetch_and_store_transactions_in_block_range(block_from=(block_lowest_fetched - n), block_to=(block_lowest_fetched - 1))   
     elif mode == 2:
         df = read_from_db('select distinct transaction_hash from transactions where transaction_hash not in (select transaction_hash from receipts)')
-        for transaction_hash in df['transaction_hash']:
+        for transaction_hash in tqdm(df['transaction_hash']):
             try:
                 fetch_and_process_receipts(transaction_hash)
             except Exception as e:
