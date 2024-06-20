@@ -1,6 +1,6 @@
 `main.py`
-* Usage: python3 main.py --mode <mode> [--n <n>]
-* Example: python3 main.py --mode 1 --n 10000
+* Usage: `python3 main.py --mode <mode> [--n <n>]`
+* Example: `python3 main.py --mode 1 --n 10000`
 * Parameters:
     *    --mode <mode> (required)
         Specifies the mode of operation. Acceptable values are:
@@ -15,8 +15,5 @@
 * create e10.db
 * execute to initialize db with populated tables marketplaces, abi_event and view v_nft_price_data 
 
-`config.py`
-* specify node to connect to (url)
-
 `.env.sample`
-*  copy this document and save it as `.env` with your keys
+*  copy this document and save it as `.env` with your keys / the node to use
