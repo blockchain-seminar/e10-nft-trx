@@ -7,7 +7,7 @@ load_dotenv()
 
 infura_api_key = os.environ['INFURA_API_KEY']
 etherscan_api_key = os.environ['ETHSCAN_API_KEY']
-url = os.environ['node']
+url = os.environ['NODE']
 
 #url = f'https://mainnet.infura.io/v3/{infura_api_key}'
 
