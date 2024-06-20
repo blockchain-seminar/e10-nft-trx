@@ -1,6 +1,6 @@
 import argparse
 
-import tqdm
+from tqdm import tqdm
 from data_processing import enrich, fetch_and_process_receipts, fetch_and_store_transactions_in_block_range
 from db_connections import get_latest_blocks, read_from_db
 from utils import setup_logger
