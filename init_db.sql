@@ -159,5 +159,6 @@ INSERT INTO "abi_events" ("anonymous","name","type","contract_address","id","inp
  (0,'Upgraded','event','0x68d25992b1b04be8a70104de8cb598170ab9aad5',1,1,'address','implementation','address',1);
 CREATE VIEW v_nft_price_data AS
 SELECT n.*, m.name as "marketplace" from nft_price_data n
-left join marketplaces m on lower(n.transaction_interacted_contract) = lower(m.contract_address);
+left join marketplaces m on lower(n.transaction_interacted_contract) = lower(m.contract_address)
+where contract_type != 'Unknown';
 COMMIT;
