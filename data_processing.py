@@ -47,7 +47,7 @@ def filter_transactions_by_marketplace(transactions):
 def fetch_and_store_transactions_in_block_range(block_from, block_to):
     logger.info('START: fetching_and_store_transactions_in_block_range ...')
     try:
-        for block_number in tqdm(range(block_from, block_to)):
+        for block_number in tqdm(range(block_from, block_to+1)):
             block = w3.eth.get_block(block_number, full_transactions=True)
             write_to_db(pd.DataFrame({'fetched_dt': datetime.now(), 'block_number': block.number},index=[0]), 'fetched_blocks')
             df_transactions = filter_transactions_by_marketplace(block.transactions)
