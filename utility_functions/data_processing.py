@@ -126,7 +126,7 @@ def get_traded_price_and_currency(value_eth, topic, token_contract,data):
                 traded_price = token_value / (10 ** decimals)
                 currency = symbol
             except Exception as e:
-                logger.exception(e)
+                #logger.exception(e)
                 pass
 
     return traded_price, currency
