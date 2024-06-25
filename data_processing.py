@@ -48,7 +48,7 @@ def fetch_and_store_transactions_in_block_range(block_from, block_to):
     logger.info('START: fetching_and_store_transactions_in_block_range ...')
     df_transactions = None
     try:
-        for block_number in tqdm(range(block_from, block_to)):
+        for block_number in tqdm(range(block_from, block_to+1)):
             block = w3.eth.get_block(block_number, full_transactions=True)
             write_to_db(pd.DataFrame({'fetched_dt': datetime.now(), 'block_number': block['number']},index=[0]), 'fetched_blocks')
             df_transactions = filter_transactions_by_marketplace(block['transactions'])
@@ -132,7 +132,7 @@ def enrich():
     For all the raw data that hasn't been enriched and stored in table nft_price_data, we fetch contract_type and nft information
     '''
     df = read_from_db('select l.*, t.to_address, t.from_address, t.value from receipt_logs l left join transactions t on t.transaction_hash = l.transaction_hash where t.transaction_hash not in (select distinct transaction_hash from nft_price_data);')
-    for index, row in tqdm(df.iterrows()):
+    for index, row in tqdm(df.iterrows(), total=df.shape[0]):
         temp = {}
         contract_type = determine_contract_type(row['address'])
         traded_price_eth, currency, from_address, to_address,nft_collection,nft_token_id = None, None, None, None, None, None
@@ -151,7 +151,7 @@ def enrich():
                     nft_collection = row['address']
                     nft_token_id = parse_int_from_data(row['topics_3'])
             except Exception as e:
-                logger.exception(e)
+                #logger.exception(e)
                 pass
 
 
