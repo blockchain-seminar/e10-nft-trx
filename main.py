@@ -6,10 +6,10 @@ def initialize():
     # TODO
     pass
 
-def main():
+def main(mode = 1):
     logger = setup_logger()
     n = 10 # for mode 3
-    mode = 3 # 1 = fetch and store new blocks and transactions for specified n; 2 = fetch and store the receipts and logs; 3 = final processing of data 
+    mode = mode # 1 = fetch and store new blocks and transactions for specified n; 2 = fetch and store the receipts and logs; 3 = final processing of data
 
     if mode == 1:
         block_latest, block_lowest_fetched, block_highest_fetched = get_latest_blocks()
